@@ -6,9 +6,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+
+    public static final String EXTRA_MSG = "message";
+    private static final int REQUEST_CODE = 1;
+    EditText etname;
+    TextView headtextview;
+    TextView replytextview;
 
     private static final String TAG = "MainActivity";
 
@@ -16,7 +24,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        etname = (EditText) findViewById(R.id.editText);
+        headtextview = (TextView) findViewById(R.id.textView);
+        replytextview = (TextView) findViewById(R.id.textView2);
         showmsg("onCreate");
+
+
     }
 
 
@@ -59,12 +72,35 @@ public class MainActivity extends AppCompatActivity {
         showmsg("onDestroy");
     }
 
-    public void showmsg(String msg){
-        Log.d("lifecycle"+TAG,msg);
+    public void showmsg(String msg) {
+        Log.d("lifecycle" + TAG, msg);
     }
 
 
     public void movetoanother(View view) {
-        startActivity(new Intent(this, SecondActivity.class));
+        Intent intent = new Intent(this,SecondActivity.class);
+        String message=etname.getText().toString();
+        intent.putExtra(EXTRA_MSG, message);
+        startActivityForResult(intent, REQUEST_CODE);
     }
-}
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Test for the right intent reply
+        if (requestCode == REQUEST_CODE) {
+            // Test to make sure the intent reply result was good.
+            if (resultCode == RESULT_OK) {
+
+                String reply = data.getStringExtra(SecondActivity.EXTRA_REPLY);
+                headtextview.setVisibility(View.VISIBLE);
+                replytextview.setText(reply);
+                replytextview.setVisibility(View.VISIBLE);
+            }
+
+        }
+
+        }
+    }
+
