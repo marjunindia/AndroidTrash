@@ -1,6 +1,7 @@
 package com.example.arjun_mu.android;
 
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
 
     public static final String EXTRA_MSG = "message";
     private static final int REQUEST_CODE = 1;
@@ -30,8 +30,30 @@ public class MainActivity extends AppCompatActivity {
         showmsg("onCreate");
 
 
+        if (savedInstanceState != null) {
+
+            boolean isVisible = savedInstanceState.getBoolean("reply_visible");
+            if (isVisible) {
+                headtextview.setVisibility(View.VISIBLE);
+                replytextview.setVisibility(View.VISIBLE);
+                replytextview.setText(savedInstanceState.getString("reply_text"));
+
+            }
+        }
+
     }
 
+
+    // Save the activity instance state with onSaveInstanceState()
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        if (headtextview.getVisibility() == View.VISIBLE) {
+            outState.putBoolean("reply_visible", true);
+            outState.putString("reply_text", replytextview.getText().toString());
+
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -78,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void movetoanother(View view) {
-        Intent intent = new Intent(this,SecondActivity.class);
-        String message=etname.getText().toString();
+        Intent intent = new Intent(this, SecondActivity.class);
+        String message = etname.getText().toString();
         intent.putExtra(EXTRA_MSG, message);
         startActivityForResult(intent, REQUEST_CODE);
     }
@@ -101,6 +123,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        }
     }
+}
 
