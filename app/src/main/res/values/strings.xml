@@ -1,7 +1,21 @@
 <resources>
-    <string name="app_name">Android</string>
-    <string name="button_label_count">Count</string>
-    <string name="button_label_toast">Toast</string>
-    <string name="count_initial_value">0</string>
-    <string name="toast_button_toast">Hello Toast!</string>
+    <string name="app_name">Implicit intent</string>
+
+    <!-- Default text for Open Website -->
+    <string name="edittext_uri">http://developer.android.com</string>
+
+    <!-- Button label for Open Website [CHAR LIMIT=20]-->
+    <string name="button_uri">Open Website</string>
+
+    <!-- Default text for Open Location [CHAR LIMIT=30]-->
+    <string name="edittext_loc">Golden Gate Bridge</string>
+
+    <!-- Button label for Open Location [CHAR LIMIT=20]-->
+    <string name="button_loc">Open Location</string>
+
+    <!-- Default text for Share This Text [CHAR LIMIT=NONE]-->
+    <string name="edittext_share">\'Twas brillig and the slithy toves</string>
+
+    <!-- Button label for Share This Text [CHAR LIMIT=20]-->
+    <string name="button_share">Share This Text</string>
 </resources>

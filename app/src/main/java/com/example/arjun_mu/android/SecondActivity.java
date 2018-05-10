@@ -18,7 +18,6 @@ public class SecondActivity extends AppCompatActivity {
         setContentView(R.layout.activity_second);
         showmsg("onCreate");
         Intent intent = getIntent();
-        message = intent.getStringExtra(MainActivity.EXTRA_MSG);
 
 
     }
