@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mLocationEditText;
     // EditText view for the share text
     private EditText mShareTextEditText;
-
+    asdsads
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
