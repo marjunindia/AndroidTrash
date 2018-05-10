@@ -1,39 +1,64 @@
 package com.example.arjun_mu.android;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView mTextView;
-    //Key for saving the state of the TextView
+
+    EditText mBookInput;
+    private TextView mTitleText;
+    private TextView mAuthorText;
     private static final String TEXT_STATE = "currentText";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTextView=(TextView)findViewById(R.id.textView1);
+        mTitleText=(TextView)findViewById(R.id.textView1);
+        mAuthorText=(TextView)findViewById(R.id.textView2);
+        mBookInput=(EditText)findViewById(R.id.editText);
 
-        // Restore TextView if there is a savedInstanceState
-        if(savedInstanceState!=null){
-            mTextView.setText(savedInstanceState.getString(TEXT_STATE));
+    }
+
+    public void searchBooks(View view) {
+
+        String queryString = mBookInput.getText().toString();
+
+        // user enter word after hide keybord when user taps
+        InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected() && queryString.length()!=0) {
+            new FetchBook(mTitleText, mAuthorText).execute(queryString);
+            mAuthorText.setText("");
+            mTitleText.setText("loading");
+        }
+
+        else {
+            if (queryString.length() == 0) {
+                mAuthorText.setText("");
+                mTitleText.setText("Please enter a search term");
+            } else {
+                mAuthorText.setText("");
+                mTitleText.setText("Please check your network connection and try again.");
+            }
         }
     }
-    public void startTask (View view) {
-        // Put a message in the text view
-        mTextView.setText("Napping... ");
 
-        // Start the AsyncTask.
-        // The AsyncTask has a callback that will update the text view.
-        new SimpleAsyncTask(mTextView).execute();
-    }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putString(TEXT_STATE, mTextView.getText().toString());
 
-    }
 }

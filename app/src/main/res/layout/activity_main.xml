@@ -8,15 +8,30 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ready_to_start"
+        android:text="text"
         android:id = "@+id/textView1"
         android:textSize="24sp"/>
-
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="start_task"
+        android:text="text"
+        android:id = "@+id/textView2"
+        android:textSize="24sp"/>
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+         />
+
+    <Button
         android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
-        android:onClick="startTask" />
+        android:onClick="searchBooks"
+        android:text="search" />
+
 </LinearLayout>
