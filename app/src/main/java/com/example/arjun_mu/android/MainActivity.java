@@ -1,238 +1,87 @@
 package com.example.arjun_mu.android;
 
-import android.app.Notification;
+
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.support.v4.app.NotificationCompat;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+import android.widget.ToggleButton;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    private NotificationManager mNotifyManager;
+    private NotificationManager mNotificationManager;
 
-    /*Constants for the notification id, the web url for a button in the notification, and the
-    custom notification actions for buttons in the notification*/
     private static final int NOTIFICATION_ID = 0;
-    private static final String NOTIFICATION_GUIDE_URL =
-            "https://developer.android.com/design/patterns/notifications.html";
-    private static final String ACTION_UPDATE_NOTIFICATION =
-            "com.example.android.notifyme.ACTION_UPDATE_NOTIFICATION";
-    private static final String ACTION_CANCEL_NOTIFICATION =
-            "com.example.android.notifyme.ACTION_CANCEL_NOTIFICATION";
 
-    private Button mNotifyButton;
-    private Button mUpdateButton;
-    private Button mCancelButton;
-
-    private NotificationReceiver mReceiver = new NotificationReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mNotifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        mNotifyButton = (Button) findViewById(R.id.notify);
-        mUpdateButton = (Button) findViewById(R.id.update);
-        mCancelButton = (Button) findViewById(R.id.cancel);
+        ToggleButton alarmToggle = (ToggleButton) findViewById(R.id.alarmToggle);
 
-        mNotifyButton.setEnabled(true);
-        mUpdateButton.setEnabled(false);
-        mCancelButton.setEnabled(true);
+        //Set up the Notification Broadcast Intent
+        Intent notifyIntent = new Intent(this, AlarmReceiver.class);
 
-        //Initialize and register the notification receiver
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_UPDATE_NOTIFICATION);
-        intentFilter.addAction(ACTION_CANCEL_NOTIFICATION);
-        registerReceiver(mReceiver, intentFilter);
+        //Check if the Alarm is already set, and check the toggle accordingly
+        boolean alarmUp = (PendingIntent.getBroadcast(this, 0, notifyIntent,
+                PendingIntent.FLAG_NO_CREATE) != null);
+
+        alarmToggle.setChecked(alarmUp);
+
+        //Set up the PendingIntent for the AlarmManager
+        final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
+                (this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-        //Set OnClick methods.
-        mNotifyButton.setOnClickListener(new View.OnClickListener() {
+
+        alarmToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                sendNotification();
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                String toastMessage;
+                if(isChecked){
+
+                    long triggerTime = SystemClock.elapsedRealtime()
+                            + AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+
+                    long repeatInterval = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+
+                    //If the Toggle is turned on, set the repeating alarm with a 15 minute interval
+                    alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                            triggerTime, repeatInterval, notifyPendingIntent);
+
+                    //Set the toast message for the "on" case
+                    toastMessage = "alarm_on_toast";
+                } else {
+                    //Cancel the alarm and notification if the alarm is turned off
+                    alarmManager.cancel(notifyPendingIntent);
+                    mNotificationManager.cancelAll();
+
+                    //Set the toast message for the "off" case
+                    toastMessage = "alarm_off_toast";
+                }
+
+                //Show a toast to say the alarm is turned on or off
+                Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_SHORT)
+                        .show();
             }
         });
 
-        mUpdateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateNotification();
-            }
-        });
 
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cancelNotification();
-            }
-        });
+
+
 
     }
 
-    /**
-     * Unregister the receiver when the app is destroyed
-     */
-    @Override
-    protected void onDestroy() {
-        unregisterReceiver(mReceiver);
-        super.onDestroy();
-    }
 
-    /**
-     * OnClick method for the "Notify Me!" button. Creates and delivers a simple notification
-     */
-    public void sendNotification() {
-
-        //Sets up the pending intent that is delivered when the notification is clicked
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent notificationPendingIntent = PendingIntent.getActivity
-                (this, NOTIFICATION_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        // Sets up the pending intent to cancel the notification,
-        // delivered when the user dismisses the notification
-        Intent cancelIntent = new Intent(ACTION_CANCEL_NOTIFICATION);
-        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast
-                (this, NOTIFICATION_ID, cancelIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        //Sets up the pending intent associated with the Learn More notification action,
-        //uses an implicit intent to go to the web.
-        Intent learnMoreIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(NOTIFICATION_GUIDE_URL));
-        PendingIntent learnMorePendingIntent = PendingIntent.getActivity
-                (this, NOTIFICATION_ID, learnMoreIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        //Sets up the pending intent to update the notification. Corresponds to a press of the
-        //Update Me! button
-        Intent updateIntent = new Intent(ACTION_UPDATE_NOTIFICATION);
-        PendingIntent updatePendingIntent = PendingIntent.getBroadcast
-                (this, NOTIFICATION_ID, updateIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        //Builds the notification with all of the parameters
-        NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle("notification_title")
-                .setContentText("notification_text")
-                .setSmallIcon(R.drawable.ic_android)
-                .setContentIntent(notificationPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .addAction(R.drawable.ic_android, "learn_more",
-                        learnMorePendingIntent)
-                .addAction(R.drawable.ic_android, "update", updatePendingIntent)
-                .setDeleteIntent(cancelPendingIntent);
-
-        //Delivers the notification
-        mNotifyManager.notify(NOTIFICATION_ID, notifyBuilder.build());
-
-        //Enables the update and cancel buttons but disables the "Notify Me!" button
-        mNotifyButton.setEnabled(false);
-        mUpdateButton.setEnabled(true);
-        mCancelButton.setEnabled(true);
-
-    }
-
-    /**
-     * OnClick method for the "Update Me!" button. Updates the existing notification to show a
-     * picture.
-     */
-    private void updateNotification() {
-
-        //Load the drawable resource into the a bitmap image
-        Bitmap androidImage = BitmapFactory.decodeResource(getResources(),R.drawable.ic_android);
-
-        //Sets up the pending intent that is delivered when the notification is clicked
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent notificationPendingIntent = PendingIntent.getActivity
-                (this, NOTIFICATION_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        // Sets up the pending intent to cancel the notification,
-        // delivered when the user dismisses the notification
-        Intent cancelIntent = new Intent(ACTION_CANCEL_NOTIFICATION);
-        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast
-                (this, NOTIFICATION_ID, cancelIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        //Sets up the pending intent associated with the Learn More notification action,
-        //uses an implicit intent to go to the web.
-        Intent learnMoreIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(NOTIFICATION_GUIDE_URL));
-        PendingIntent learnMorePendingIntent = PendingIntent.getActivity
-                (this, NOTIFICATION_ID, learnMoreIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        //Build the updated notification
-        NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle("notification_title")
-                .setContentText("notification_text")
-                .setSmallIcon(R.drawable.ic_android)
-                .setContentIntent(notificationPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setDeleteIntent(cancelPendingIntent)
-                .addAction(R.drawable.ic_android, "learn_more",
-                        learnMorePendingIntent)
-                .setStyle(new NotificationCompat.BigPictureStyle()
-                        .bigPicture(androidImage)
-                        .setBigContentTitle("notification_updated"));
-
-
-        //Disable the update button, leaving only the option to cancel
-        mNotifyButton.setEnabled(false);
-        mUpdateButton.setEnabled(false);
-        mCancelButton.setEnabled(true);
-
-        //Deliver the notification
-        Notification myNotification = notifyBuilder.build();
-        mNotifyManager.notify(NOTIFICATION_ID, myNotification);
-
-    }
-
-    /**
-     * OnClick method for the "Cancel Me!" button. Cancels the notification
-     */
-    private void cancelNotification() {
-        //Cancel the notification
-        mNotifyManager.cancel(NOTIFICATION_ID);
-
-        //Resets the buttons
-        mNotifyButton.setEnabled(true);
-        mUpdateButton.setEnabled(false);
-        mCancelButton.setEnabled(false);
-    }
-
-
-    /**
-     * The broadcast receiver class for notifications. Responds to the update notification and
-     * cancel notification pending intents actions.
-     */
-    private class NotificationReceiver extends BroadcastReceiver {
-
-        /**
-         * Gets the action from the incoming broadcast intent and responds accordingly
-         * @param context Context of the app when the broadcast is received.
-         * @param intent The broadcast intent containing the action.
-         */
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            switch (action){
-                case ACTION_CANCEL_NOTIFICATION:
-                    cancelNotification();
-                    break;
-                case ACTION_UPDATE_NOTIFICATION:
-                    updateNotification();
-                    break;
-            }
-        }
-    }
 }
