@@ -14,7 +14,7 @@
         android:id="@+id/apptextView"
         android:layout_width="352dp"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+       />
 
     <Button
         android:id="@+id/button"
