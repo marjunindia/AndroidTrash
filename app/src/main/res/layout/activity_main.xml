@@ -10,45 +10,18 @@
     tools:context="com.example.android.implicitintents.MainActivity"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/website_edittext"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/apptextView"
+        android:layout_width="352dp"
         android:layout_height="wrap_content"
-        android:text="@string/edittext_uri" />
+        android:text="TextView" />
 
     <Button
-        android:id="@+id/open_website_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:onClick="openWebsite"
-        android:text="@string/button_uri" />
-
-    <EditText
-        android:id="@+id/location_editext"
+        android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/edittext_loc" />
+        android:onClick="changetext"
+        android:text="cliick to change" />
 
-    <Button
-        android:id="@+id/open_location_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:onClick="openLocation"
-        android:text="@string/button_loc" />
 
-    <EditText
-        android:id="@+id/share_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/edittext_share" />
-
-    <Button
-        android:id="@+id/share_text_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:onClick="shareText"
-        android:text="@string/button_share" />
 </LinearLayout>
