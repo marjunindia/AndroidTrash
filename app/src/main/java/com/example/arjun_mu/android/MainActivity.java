@@ -4,6 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 ;
         globaltextview=(TextView)findViewById(R.id.apptextView);
 
-
+        EventBus.getDefault().register(this);
 
     }
 
@@ -26,16 +31,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if(MySingleton.getInstance().isSave()){
-            globaltextview.setText(MySingleton.getInstance().getName());
 
-        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+
+    }
+
+
+    @Subscribe(threadMode =ThreadMode.MAIN)
+    public void onMessageEvent(SampleData sampleData){
+        Toast.makeText(this, ""+sampleData.getName(), Toast.LENGTH_SHORT).show();
 
     }
 
     public void changetext(View view) {
-        globaltextview.setText(MySingleton.getInstance().getName());
-            MySingleton.getInstance().setSave(true);
+
+        MyIntentService.startActionBaz(this,"13","1232");
     }
 }
 
