@@ -1,24 +1,16 @@
 <resources>
-    <string name="app_name">Hello Shared Prefs</string>
 
-    <!-- Button label for blue button -->
-    <string name="blue_button">Blue</string>
+    <string name="app_name">Minimalist Content Provider</string>
 
-    <!-- Button label for green button -->
-    <string name="green_button">Green</string>
+    <string name="list_all_words">List all words</string>
+    <string name="list_first_word">List first word</string>
+    <string name="response">Response: \n</string>
 
-    <!-- Button label for red button -->
-    <string name="red_button">Red</string>
+    <string-array name="words">
+        <item>Android</item>
+        <item>Activity</item>
+        <item>ContentProvider</item>
+        <item>ContentResolver</item>
+    </string-array>
 
-    <!-- Button label for black button -->
-    <string name="black_button">Black</string>
-
-    <!-- Default string for count textview -->
-    <string name="default_count">0</string>
-
-    <!-- Button label for Count button -->
-    <string name="count_button">Count</string>
-
-    <!-- Button label for Reset button -->
-    <string name="reset_button">Reset</string>
 </resources>
