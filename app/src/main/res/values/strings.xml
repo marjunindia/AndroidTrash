@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Android</string>
     <string name="location_permission_denied">permission deniedd</string>
+    <string name="location_text">"Latitude: %1$.4f \n Longitude: %2$.4f
+ \n Timestamp: %3$tr"</string>
+    <string name="no_location">no location</string>
 </resources>

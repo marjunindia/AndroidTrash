@@ -2,22 +2,35 @@ package com.example.arjun_mu.android;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private static final int REQUEST_LOCATION_PERMISSION =1 ;
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
+    TextView mLocationTextView;
+    FusedLocationProviderClient mFusedLocationClient;
+    Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLocationTextView = (TextView) findViewById(R.id.location);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
     }
 
     private void getLocation() {
@@ -29,6 +42,27 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_LOCATION_PERMISSION);
         } else {
             Log.d(TAG, "getLocation: permissions granted");
+
+
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(
+                    new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                mLastLocation = location;
+                                mLocationTextView.setText(
+                                        getString(R.string.location_text,
+                                                mLastLocation.getLatitude(),
+                                                mLastLocation.getLongitude(),
+                                                mLastLocation.getTime()));
+                            } else {
+                                mLocationTextView.setText(R.string.no_location);
+                            }
+                        }
+
+
+                    });
+
         }
     }
 
@@ -53,5 +87,7 @@ public class MainActivity extends AppCompatActivity {
     public void getlocationofuser(View view) {
 
         getLocation();
+
+
     }
 }
