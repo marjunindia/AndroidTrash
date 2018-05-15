@@ -7,13 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SimpleFragment.onFragmentListener {
 
     private Button mButton;
     private boolean isFragmentDisplayed = false;
     // Saved instance state key.
     static final String STATE_FRAGMENT = "state_of_fragment";
+    private int mRadioButtonChoice = 2; // The default (no choice).
 
 
     @Override
@@ -86,7 +88,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState, PersistableBundle outPersistentState) {
         savedInstanceState.putBoolean(STATE_FRAGMENT, isFragmentDisplayed);
-
         super.onSaveInstanceState(savedInstanceState, outPersistentState);
+    }
+
+    @Override
+    public void onRadioButtonChoice(int choice) {
+        mRadioButtonChoice = choice;
+        Toast.makeText(this, "Choice is " + Integer.toString(choice),
+                Toast.LENGTH_SHORT).show();
     }
 }
