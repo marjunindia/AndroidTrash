@@ -16,7 +16,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FetchAddressTask.OnTaskCompleted{
     private static final String TAG = "MainActivity";
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     TextView mLocationTextView;
@@ -48,16 +48,22 @@ public class MainActivity extends AppCompatActivity {
                     new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
-                            if (location != null) {
-                                mLastLocation = location;
-                                mLocationTextView.setText(
-                                        getString(R.string.location_text,
-                                                mLastLocation.getLatitude(),
-                                                mLastLocation.getLongitude(),
-                                                mLastLocation.getTime()));
-                            } else {
-                                mLocationTextView.setText(R.string.no_location);
-                            }
+//                            if (location != null) {
+//                                mLastLocation = location;
+//                                mLocationTextView.setText(
+//                                        getString(R.string.location_text,
+//                                                mLastLocation.getLatitude(),
+//                                                mLastLocation.getLongitude(),
+//                                                mLastLocation.getTime()));
+//                            } else {
+//                                mLocationTextView.setText(R.string.no_location);
+//                            }
+
+
+                            new FetchAddressTask(MainActivity.this,
+                                    MainActivity.this).execute(location);
+
+
                         }
 
 
@@ -89,5 +95,11 @@ public class MainActivity extends AppCompatActivity {
         getLocation();
 
 
+    }
+
+    @Override
+    public void onTaskCompleted(String result) {
+        mLocationTextView.setText(getString(R.string.address_text,
+                result, System.currentTimeMillis()));
     }
 }

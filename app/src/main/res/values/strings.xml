@@ -4,4 +4,8 @@
     <string name="location_text">"Latitude: %1$.4f \n Longitude: %2$.4f
  \n Timestamp: %3$tr"</string>
     <string name="no_location">no location</string>
+    <string name="service_not_available">not available</string>
+    <string name="invalid_lat_long_used">invalid lat lomg</string>
+    <string name="no_address_found">no address found</string>
+    <string name="address_text">Address: %1$s \\n Timestamp: %2$tr</string>
 </resources>
