@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.arjun_mu.android">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyBuWJY74AjubybQ_B5gUrtofWuugGk053M"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
