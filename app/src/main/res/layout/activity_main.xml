@@ -29,4 +29,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageview_android"
+        android:layout_width="128dp"
+        android:layout_height="124dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/android_plain"
+        tools:layout_editor_absoluteY="204dp" />
+
 </android.support.constraint.ConstraintLayout>
