@@ -14,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -45,9 +46,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(13.015719, 80.202191);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
+        LatLng myarea = new LatLng(13.015719, 80.202191);
+        mMap.addMarker(new MarkerOptions().position(myarea).title("chennai").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myarea, 15));
+
+
+        GroundOverlayOptions homeOverlay = new GroundOverlayOptions()
+                .image(BitmapDescriptorFactory.fromResource(R.drawable.android)).position(myarea,15);
+        mMap.addGroundOverlay(homeOverlay);
 
         setMapLongClick(mMap);
         setPoiClick(mMap);
