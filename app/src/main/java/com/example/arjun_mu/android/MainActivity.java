@@ -11,7 +11,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PointOfInterest;
 
 import java.util.Locale;
 
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
 
         setMapLongClick(mMap);
+        setPoiClick(mMap);
     }
 
     private void setMapLongClick(final GoogleMap map) {
@@ -65,6 +68,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
+
+    private void setPoiClick(final GoogleMap map) {
+
+        map.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
+            @Override
+            public void onPoiClick(PointOfInterest poi) {
+                Marker poiMarker = mMap.addMarker(new MarkerOptions()
+                        .position(poi.latLng)
+                        .title(poi.name));
+                poiMarker.showInfoWindow();
+
+            }
+        });
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
