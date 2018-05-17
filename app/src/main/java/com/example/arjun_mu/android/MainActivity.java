@@ -16,7 +16,9 @@ import android.view.MenuItem;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.StreetViewPanoramaOptions;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.SupportStreetViewPanoramaFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
@@ -41,9 +43,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+
+        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, mapFragment).commit();
         mapFragment.getMapAsync(this);
 
     }
@@ -65,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         setMapLongClick(mMap);
         setPoiClick(mMap);
+        setInfoWindowClickToPanorama(mMap);
 
         try {
             // Customize the styling of the base map using a JSON object defined
@@ -109,6 +116,35 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
         }
     }
+    private void setInfoWindowClickToPanorama(GoogleMap map) {
+
+        map.setOnInfoWindowClickListener(
+                new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+
+                        if (marker.getTag() == "poi") {
+
+                            StreetViewPanoramaOptions options =
+                                    new StreetViewPanoramaOptions().position(
+                                            marker.getPosition());
+
+                            SupportStreetViewPanoramaFragment streetViewFragment
+                                    = SupportStreetViewPanoramaFragment
+                                    .newInstance(options);
+
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment_container,
+                                            streetViewFragment)
+                                    .addToBackStack(null).commit();
+
+                        }
+
+                    }
+                });
+
+
+    }
 
     private void setMapLongClick(final GoogleMap map) {
 
@@ -141,6 +177,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .position(poi.latLng)
                         .title(poi.name));
                 poiMarker.showInfoWindow();
+                poiMarker.setTag("poi");
+
 
             }
         });
